@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import sys
+from importlib.util import find_spec
 
 
 def get_project_root() -> str:
@@ -17,20 +18,27 @@ def get_dav2_root() -> str:
 
 
 def setup_dav2_import() -> str:
-    """Add Depth-Anything-V2 to ``sys.path`` so ``depth_anything_v2`` can be imported.
+    """Make ``depth_anything_v2`` importable.
 
     Returns:
-        Absolute path to the Depth-Anything-V2 repository root.
+        Absolute path to the vendored Depth-Anything-V2 repository root when
+        using the submodule, or an empty string when an installed package is used.
 
     Raises:
-        FileNotFoundError: If the submodule / clone is missing.
+        FileNotFoundError: If neither the installed package nor the vendored
+        submodule is available.
     """
+    if find_spec("depth_anything_v2") is not None:
+        return ""
+
     dav2_root = get_dav2_root()
     if not os.path.isdir(dav2_root):
         raise FileNotFoundError(
-            "Depth-Anything-V2 not found at "
+            "depth_anything_v2 is not installed and Depth-Anything-V2 was not found at "
             f"{dav2_root}\n"
-            "Run from the repo root:\n"
+            "Install with:\n"
+            "  pip install -e .[depth-anything-V2]\n"
+            "or run from the repo root:\n"
             "  git submodule update --init --recursive"
         )
     if dav2_root not in sys.path:

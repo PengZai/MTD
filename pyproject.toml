@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=64.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mtd"
+version = "0.1.0"
+description = "The Midas Touch for Metric Depth"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "Yu Ma" },
+  { name = "Zizhan Guo" },
+  { name = "Zuyi Xiong" },
+  { name = "Haoran Zhang" },
+  { name = "Yi Feng" },
+  { name = "Hongbo Zhao" },
+  { name = "Hanli Wang" },
+  { name = "Rui Fan" },
+]
+dependencies = [
+  "matplotlib",
+  "numpy",
+  "opencv-python",
+  "pillow",
+  "scikit-image",
+  "scikit-learn",
+  "torch>=2.2,<3",
+  "torchvision>=0.17,<1",
+]
+
+[project.optional-dependencies]
+depth-anything-V2 = [
+  "depth-anything-v2 @ git+https://github.com/PengZai/Depth-Anything-V2.git",
+]
+superpixels = [
+  "fast_slic",
+  "opencv-contrib-python",
+]
+
+[project.urls]
+Homepage = "https://github.com/HenryMaxixi/MTD"
+Repository = "https://github.com/HenryMaxixi/MTD"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = [
+  "core*",
+  "datasets*",
+  "utils*",
+]
