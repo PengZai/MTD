@@ -237,6 +237,12 @@ def build_segment_graph(
     device     = segments.device
     n_seg      = valid_segments.shape[0]
     H, W       = segments.shape
+    k_actual = min(k_neighbors, max(n_seg - 1, 0))
+    if k_actual == 0:
+        # A single segment has no neighbours to propagate from. Preserve its
+        # existing fit with an empty graph instead of taking median(empty).
+        return (torch.empty((n_seg, 0), dtype=torch.long, device=device),
+                torch.empty((n_seg, 0), dtype=torch.float32, device=device))
 
     y_coord, x_coord = torch.meshgrid(
         torch.arange(H, device=device, dtype=torch.float32),
@@ -256,7 +262,6 @@ def build_segment_graph(
     dist_mat.masked_fill_(~valid_segments.unsqueeze(0), float('inf'))
     dist_mat.fill_diagonal_(float('inf'))
 
-    k_actual = min(k_neighbors, n_seg - 1)
     topk_dist, topk_idx = torch.topk(dist_mat, k=k_actual, dim=1, largest=False)
 
     if tau is None:
